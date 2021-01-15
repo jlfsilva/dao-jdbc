@@ -28,8 +28,7 @@ public class SellerDaoJDBC implements SellerDao {
 	@Override
 	public void insert(Seller s) {
 
-		String sql = "INSERT INTO seller" + "(Name, Email, BirthDate, BaseSalary, DepartmentId)" + "VALUES"
-				+ "(?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId) VALUES" + "(?, ?, ?, ?, ?)";
 
 		PreparedStatement st = null;
 		try {
@@ -62,7 +61,28 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void update(Seller s) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE seller SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ?"
+				+ " WHERE Id = ?";
+
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			st.setString(1, s.getName());
+			st.setString(2, s.getEmail());
+			st.setDate(3, new java.sql.Date(s.getBirthDate().getTime()));
+			st.setDouble(4, s.getBaseSalary());
+			st.setInt(5, s.getDepartment().getId());
+			st.setInt(6, s.getId());
+
+			st.executeUpdate();
+
+		} catch (
+
+		SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 
 	}
 
